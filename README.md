@@ -26,28 +26,23 @@ echo (string)(new Math(20))->add(2); // 22.00000000000....
 
 ```
 
-# Returns
+# New instance returned on each call
 
-A quick note on the returns of operation methods. Consider this example:
-```
+A new instance of the class is returned on each operation called:
 
+```php
+$number = (new Math(20))->add(40)->setPlaces(0); // instance with value of 60
 
-$number = (new Math(20))->add(40);
+$number->add(30); //this is a new instance, we didnt assign this instance to the variabl $number
 
-$number->add(30);
-
+//therefore, this would return 60, not 90.
 var_dump($number->get());
 
-
 ```
-
-You would think that the output of the `var_dump($number)` would be `90`. However the actual output would be `60`. This is because `$number->add(30);` is not adding 30 to the first instance. Each time you call a operation method, a new instance of the class is returned for you. This is to avoid the value from being changed to something you dont expect when running multiple operations then doing stuff then doing more operations. This way, you can just assign the values you need to some variables and keep things a bit more clean.
-
-
 
 ## Method Chain
 
-You can method chain math methods as needed:
+You can chain method calls as needed:
 
 ```php
 <?php
@@ -58,24 +53,24 @@ $math = (new Math(20))
             ->add(2)
             ->subtract(2)
             ->divide(2)
-            ->roundTo(2)
+            ->setPlaces(2)
             ->get(); //10.00
 
 ```
 
 
 
-## Round/Decimal Places
+## Set Decimal Places
 
-By default, numbers scale to 64 decimal places. You can round to however many places you need to using the `roundTo` method:
+By default, numbers scale to 64 decimal places. You can change to however many places you need to using the `setPlaces` method:
 
 ```php
-$math = (new Math(20))->roundTo(2)->get(); //22.00
+$math = (new Math(20))->setPlaces(2)->get(); //22.00
 
+//or you can always specify the places via the class constructor
+$math = (new Math(20, 2))->get(); //20.00
 
 ```
-
-I recommend doing your opertaions then calling `roundTo`.
 
 # Methods
 
@@ -87,21 +82,13 @@ $math = (new Math(20,0))->add(2)->get(); //22
 $math = $math->setValue(25)->get();//25.00
 ```
 
-### setScale - set the scale
 
-```php
-$math = (new Math(20))->add(2)->get(); //22000000......
-
-$math = $math->setScale(2)->get();//22.00
-```
-
-
-### roundTo - round/scale to the specified decimal places
+### setPlaces - round/scale to the specified decimal places
 
 ```php
 $math = (new Math(20,0))->add(2)->get(); //22.000000...
 
-$math = $math->roundTo(3)->get();//22.000
+$math = $math->setPlaces(3)->get();//22.000
 ```
 
 ### add - add a number to the value
@@ -134,18 +121,18 @@ $math = (new Math(20))->multiply(2)->get(); //40.00000000000
 $math = (new Math(8))->modulus(5)->get(); //3.00000....
 ```
 
-### percent -convert the value to a percent
+### percent - convert the value to a percent decimal
 
 ```php
 $math = (new Math(20))->percent()->get(); // 0.200000000
 ```
 
-### percentageOf -get the given percent of a number
+### percentageOf - get the given percent of the number
 
 ```php
 
 // get 7% of 3950
-$tax = (new Math(3950))->percentageOf(7)->roundTo(2)->get(); //276.50
+$tax = (new Math(3950))->percentageOf(7)->setPlaces(2)->get(); //276.50
 ```
 
 ### squareRoot - get the square root of the value

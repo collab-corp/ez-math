@@ -21,8 +21,6 @@ class MathTest extends TestCase
     {
         $math = (new Math(2));
 
-
-
         $this->assertEquals(2, (string)$math);
     }
     /**
@@ -65,7 +63,7 @@ class MathTest extends TestCase
     /**
     * @test
     */
-    public function itFindsSquareRootForNumbers()
+    public function itCanCalculateSquareRoot()
     {
         $math = (new Math(16))->squareRoot();
 
@@ -92,9 +90,16 @@ class MathTest extends TestCase
     /**
      * @test
      */
-    public function itCanConverToDecimalNumbers()
+    public function itCanSetTotalNumberOfPlaces()
     {
-        $math = (new Math("16"))->roundTo(4);
+        $math = (new Math("16"))->setPlaces(4);
+
+        $this->assertEquals("16.0000", $math->get());
+        //assure length is equal since a number and its decimal format are equal
+        $this->assertEquals(strlen("16.0000"), strlen($math->get()));
+
+        //achieve same effect with places param in constructor
+        $math = (new Math("16", 4));
 
         $this->assertEquals("16.0000", $math->get());
         //assure length is equal since a number and its decimal format are equal
@@ -106,13 +111,22 @@ class MathTest extends TestCase
      */
     public function itCanConvertNumbersToPercentDecimals()
     {
-        $math = (new Math(10))->percent()->roundTo(2);
+        $math = (new Math(10))->percent()->setPlaces(2);
 
         $this->assertEquals(0.10, $math->get());
 
-        $math = (new Math(3.5))->percent()->roundTo(3);
+        $math = (new Math(3.5))->percent()->setPlaces(3);
 
         $this->assertEquals(0.035, $math->get());
+    }
+    /**
+     * @test
+     */
+    public function itCanCalculateAGiventPercentOfTheNumber()
+    {
+        $math = (new Math(3950))->percentageOf(7)->setPlaces(2);
+
+        $this->assertEquals(276.50, $math->get());
     }
 
     /**
@@ -122,8 +136,7 @@ class MathTest extends TestCase
     {
         $math = (new Math(10))->add(20);
 
-        $math->add(20); //this does not affect the value,because this is a new instance, this value: 50
-
+        $math->add(20);
 
         $this->assertEquals(30, $math->get());
     }
@@ -133,7 +146,7 @@ class MathTest extends TestCase
      */
     public function itCanConvertReturnModulus()
     {
-        $math = (new Math(8))->modulus(5)->roundTo(2);
+        $math = (new Math(8))->modulus(5)->setPlaces(2);
 
         $this->assertEquals(3.00, $math->get());
     }

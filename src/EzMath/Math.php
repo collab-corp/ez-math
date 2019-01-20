@@ -5,29 +5,29 @@ namespace CollabCorp\EzMath;
 class Math
 {
     /**
-     * The initial value
-     * @var $mixed
+     * The initial value.
+     * @var mixed
      */
     protected $value;
     /**
-     * The scale value
+     * The scale value.
      * @var int
      */
-    protected $scale;
-
+    protected $places;
     /**
-     * Contstruct a new Math instance
+     * Contstruct a new Math instance.
+     * @param mixed $value
      * @param mixed $value
      */
-    public function __construct($value = '0')
+    public function __construct($value = 0, $places = 64)
     {
         $this->setValue($value);
-        $this->setScale(64); //by default we will scale 64 places.
+        $this->setPlaces($places); //by default we will scale 64 places.
     }
-
     /**
-    * Set the value on the instance
+    * Set the value on the instance.
     * @param mixed $value
+    * @return static
     */
     public function setValue($value)
     {
@@ -38,37 +38,37 @@ class Math
         return $this;
     }
     /**
-    * Set the scale on the instance
-    * @param int $scale
+    * Set the places on the instance.
+    * @param int $places
+    * @return static
     */
-    public function setScale($scale)
+    public function setPlaces($places)
     {
-        $this->throwExceptionIfScaleIsNegative($scale, 'setScale');
+        $this->throwExceptionIfPlacesIsNegative($places, 'setPlaces');
 
-        $this->scale = intval($scale);
+        $this->places = intval($places);
 
         return $this;
     }
 
     /**
-     * Get the value
+     * Get the value.
      * @return string
      */
     public function get()
     {
-        return number_format($this->value, $this->scale, ".", "");
+        return number_format($this->value, $this->places, ".", "");
     }
     /**
-     * String representation of this
+     * String representation of this class.
      * @return string
      */
     public function __toString()
     {
         return $this->get();
     }
-
     /**
-     * Throw an exception if the method argument value is non numeric
+     * Throw an exception if the method argument value is non numeric.
      * @param  string $value
      * @param  string $method
      * @return void
@@ -81,129 +81,120 @@ class Math
         }
     }
     /**
-     * Throw an exception if the method argument value is non numeric
-     * @param  string $scale
+     * Throw an exception if the method argument value is non numeric.
+     * @param  string $places
      * @param  string $method
      * @return void
      * @throws \InvalidArgumentException
      */
-    protected function throwExceptionIfScaleIsNegative($scale, $method)
+    protected function throwExceptionIfPlacesIsNegative($places, $method)
     {
-        if ($scale < 0) {
-            throw new \InvalidArgumentException("Non numeric value given to Math method:  $method. The \$scale argument only accepts positive integers. Input was: ".$scale);
+        if ($places < 0) {
+            throw new \InvalidArgumentException("Non numeric value given to Math method:  $method. The \$places argument only accepts positive integers. Input was: ".$places);
         }
     }
-
     /**
-     * Add a number to our exiting value
+     * Add a number to our exiting value.
      * @param mixed $addend
-     * @return CollabCorp\EzMath
+     * @return static
      */
     public function add($addend)
     {
-        $this->throwExceptionIfNonNumericValue(strval($addend), 'add');
+        $this->throwExceptionIfNonNumericValue($addend, 'add');
 
-        return new Math(bcadd($this, $addend, $this->scale));
+        return new Math(bcadd($this, $addend, $this->places));
     }
     /**
-     * Divide our exiting value by the given number
+     * Divide our exiting value by the given number.
      * @param mixed $divisor
-     * @return CollabCorp\EzMath
+     * @return static
      */
     public function divide($divisor)
     {
-        $this->throwExceptionIfNonNumericValue(strval($divisor), 'divide');
+        $this->throwExceptionIfNonNumericValue($divisor, 'divide');
 
-        if (!bccomp('0.0', $divisor, $this->scale) || !bccomp('-0.0', $divisor, $this->scale)) {
-            throw new \InvalidArgumentException('Invalid argument to Math method: divide. The $divisor argument is 0 at this scale. Input was: '.$divisor);
+        if (!bccomp('0.0', $divisor, $this->places) || !bccomp('-0.0', $divisor, $this->places)) {
+            throw new \InvalidArgumentException('Invalid argument to Math method: divide. The $divisor argument is 0 at this total places. Input was: '.$divisor);
         }
 
-
-
-        return new Math(bcdiv($this, $divisor, $this->scale));
+        return new Math(bcdiv($this, $divisor, $this->places));
     }
 
     /**
-     * Multiply our exiting value by a given number
+     * Multiply our exiting value by a given number.
      * @param mixed $multiplier
+     * @return static
      */
     public function multiply($multiplier)
     {
-        $this->throwExceptionIfNonNumericValue(strval($multiplier), 'multiply');
-        return new Math(bcmul($this, $multiplier, $this->scale));
+        $this->throwExceptionIfNonNumericValue($multiplier, 'multiply');
+        return new Math(bcmul($this, $multiplier, $this->places));
     }
     /**
-     * Raise our exiting value to a given power
+     * Raise our exiting value to a given power.
      * @param mixed $exponent
-     * @return CollabCorp\EzMath
+     * @return static
      */
     public function power($exponent)
     {
-        $this->throwExceptionIfNonNumericValue(strval($exponent), 'power');
+        $this->throwExceptionIfNonNumericValue($exponent, 'power');
 
-        return new Math(bcpow($this, $exponent, $this->scale));
+        return new Math(bcpow($this, $exponent, $this->places));
     }
     /**
-     * Subtract the given number from our exiting value
+     * Subtract the given number from our exiting value.
      * @param mixed $subtrahend
-     * @return CollabCorp\EzMath
+     * @return static
      */
     public function subtract($subtrahend)
     {
-        $this->throwExceptionIfNonNumericValue(strval($subtrahend), 'subtract');
+        $this->throwExceptionIfNonNumericValue($subtrahend, 'subtract');
 
-        return new Math(bcsub($this, $subtrahend, $this->scale));
+        return new Math(bcsub($this, $subtrahend, $this->places));
     }
     /**
      * Get the given percentage
-     * of the number
+     * of the number.
      * @param mixed $percentage
-     * @return CollabCorp\EzMath
+     * @return static
      */
     public function percentageOf($percentage)
     {
+        $this->throwExceptionIfNonNumericValue($percentage, 'percentageOf');
+
         $percentage = bcdiv($percentage, 100, 64);
+
         $percentage = bcmul($this, $percentage, 64);
+
         return new Math($percentage);
     }
     /**
-     * Get the number as a percent
-     * @return CollabCorp\EzMath
+     * Get the number as a percent.
+     * @return static
      */
     public function percent()
     {
         return new Math(bcdiv($this, 100, 64));
     }
     /**
-     * Get the modulus of our value
+     * Get the modulus of our value.
      * @param  mixed $divisor
-     * @return CollabCorp\EzMath
+     * @return static
      */
     public function modulus($divisor)
     {
-        $this->throwExceptionIfNonNumericValue(strval($divisor), 'modulus');
+        $this->throwExceptionIfNonNumericValue($divisor, 'modulus');
 
         return new Math(bcmod($this, $divisor));
     }
 
     /**
-     * Get the square root of our value
-     * @return CollabCorp\EzMath
+     * Get the square root of our value.
+     * @return static
      *
      */
     public function squareRoot()
     {
-        return new Math(bcsqrt($this, $this->scale));
-    }
-
-    /**
-     * Round to a given scale
-     * @param int $scale
-     * @return CollabCorp\EzMath
-     */
-    public function roundTo(int $scale)
-    {
-        // $this->setScale($scale);
-        return (new Math($this->get()))->setScale($scale);
+        return new Math(bcsqrt($this, $this->places));
     }
 }
