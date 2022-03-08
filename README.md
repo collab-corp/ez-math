@@ -1,7 +1,7 @@
 # ez-math
 
 ![Tests](https://github.com/collab-corp/ez-math/actions/workflows/tests.yml/badge.svg)
-
+[![StyleCI](https://github.styleci.io/repos/119897092/shield?branch=master)](https://github.styleci.io/repos/119897092?branch=master)
 
 A simple PHP wrapper math class for bcmath.
 
