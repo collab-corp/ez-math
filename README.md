@@ -42,7 +42,7 @@ $number = new Math(3.5, 3);
 
 # can do any operations where expected result wont exceed 3 decimal places.
 
-$math->toDecimalPercent()->get(); // returns 0.035 instead of 0.30 if kept the default 2 places.
+$math->toDecimalPercent()->get(); // returns 0.035 instead of 0.03 had we kept the default 2 places.
 
 ```
 
