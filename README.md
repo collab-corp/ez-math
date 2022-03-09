@@ -145,7 +145,7 @@ $tax = (new Math(3950))->percentageOf(7)->setPlaces(2)->get(); //276.50
 ### squareRoot - get the square root of the value
 
 ```php
-$math = (new Math(16))->squareRoot()->get(); // 4.0000000
+$math = (new Math(16))->squareRoot()->get(); // 4.00
 ```
 
 ## Contribute
